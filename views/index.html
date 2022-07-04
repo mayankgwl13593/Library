@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" href="css/book-collection.css" />
+    <script src="js/jQuery.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/xls-to-json.js"></script>
+    <title>Document</title>
+  </head>
+  <body>
+    <header>
+      <div class="header-parent">
+        <img class="m10" src="img/books.png" width="40" height="40" />
+        <span class="title">Library</span>
+        <div class="input-group rounded p10 search">
+          <input
+            type="search"
+            class="form-control rounded"
+            placeholder="Search"
+            aria-label="Search"
+            aria-describedby="search-addon"
+            value=""
+            oninput="search(this.value)"
+          />
+        </div>
+        <i
+          class="bi bi-cloud-download-fill downloadFile"
+          onclick="downloadFile()"
+        ></i>
+      </div>
+    </header>
+    <section>
+      <!-- No-data start -->
+      <div class="no-data">
+        <img src="img/no_data.webp" width="350" height="350" />
+      </div>
+      <!-- No-data end -->
+      <!-- Table start -->
+      <div id="tableContent">
+        <table class="table table-responsive table-bordered table-dark">
+          <thead>
+            <tr id="tableHeadRow"></tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+        <!-- <nav aria-label="Page navigation example">
+          <ul class="pagination justify-content-center">
+            <li class="page-item disabled">
+              <a class="page-link" href="#" tabindex="-1">Previous</a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+              <a class="page-link" href="#">Next</a>
+            </li>
+          </ul>
+        </nav> -->
+      </div>
+
+      <!-- Table end -->
+    </section>
+    <footer>
+      <!-- Upload-icons start -->
+      <div class="card upload">
+        <span class="upload-title p5">Upload with:</span>
+        <div class="p10">
+          <label>
+            <input
+              type="file"
+              id="input"
+              accept=".xls,.xlsx"
+              onchange="selectFile(event)"
+              style="display: none"
+            />
+            <img class="xls-file p5" src="img/xls.png" width="50" height="50" />
+          </label>
+
+          <img
+            class="normal-form p5"
+            src="img/new_add.png"
+            width="50"
+            height="50"
+            data-bs-toggle="modal"
+            data-bs-target="#exampleModalLong"
+            onclick="refreshAddBookUi()"
+          />
+        </div>
+      </div>
+      <!-- Upload-icons end -->
+
+      <!-- Modal -->
+      <div
+        class="modal fade"
+        id="exampleModalLong"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalLongTitle"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">
+                Modal title
+              </h5>
+              <button
+                type="button"
+                class="close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div
+              id="ërroMsg"
+                class="alert alert-danger"
+                role="alert"
+                style="display: none"
+              >
+                A simple danger alert—check it out!
+              </div>
+              <span id="row1" class="rowCount">#1</span>
+              <!-- <i
+                class="bi bi-trash-fill deleteManualRow"
+                onclick="deleteManualItem()"
+              ></i> -->
+              <form name="addBookForm">
+                <div class="form-group">
+                  <label for="exampleInputEmail1" class="mt10">Book Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="bookName"
+                    aria-describedby="emailHelp"
+                    placeholder="Book Name"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputPassword1" class="mt10">Author</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="author"
+                    placeholder="Author"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputPassword1" class="mt10">Genre</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="genre"
+                    placeholder="Genre"
+                    required
+                  />
+                </div>
+                <div id="form_div" class="mt10"></div>
+                <i class="bi bi-plus-square-fill" onclick="addBookMethod()"></i>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                onclick="addBookManually()"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- modal close -->
+    </footer>
+  </body>
+  <script src="js/book-collection.js"></script>
+</html>
