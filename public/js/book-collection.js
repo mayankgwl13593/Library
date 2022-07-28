@@ -93,7 +93,7 @@ function renderTable(rowObject) {
   rowObject.forEach((book) => {
     document.getElementById(
       "tableBody"
-    ).innerHTML += `<tr><td>${book.Id}</td><td>${book.Name}</td><td>${book.Author}</td><td>${book.Genre}</td> <i class="bi bi-trash-fill deleteManualRow" onclick="deleteBook(${book.Id})" style="float: left;"></i></td></td>`;
+    ).innerHTML += `<tr><td>${book.Id}</td><td>${book.Name}</td><td>${book.Author}</td><td>${book.Genre}</td><td> <i class="bi bi-trash-fill deleteManualRow" onclick="deleteBook(${book.Id})" style="float: left;"></i></td></tr>`;
   });
 }
 function getTableHeader(rowObject) {
