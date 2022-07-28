@@ -114,9 +114,9 @@ function search(event) {
   let bookList = rowObject;
   bookList = bookList.filter((data) => {
     return (
-      data.Name.toString().toLowerCase().includes(event.toLowerCase()) ||
-      data.Author.toString().toLowerCase().includes(event.toLowerCase()) || 
-      data.Genre.toString().toLowerCase().includes(event.toLowerCase())
+      data.Name?.toString().toLowerCase().includes(event.toLowerCase()) ||
+      data.Author?.toString().toLowerCase().includes(event.toLowerCase()) || 
+      data.Genre?.toString().toLowerCase().includes(event.toLowerCase())
     );
   });
   bookList.length > 0
