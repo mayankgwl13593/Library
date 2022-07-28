@@ -1,239 +1,208 @@
-let selectedFile;
-let rowObject = [];
-let bookRowId = 0;
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-let urlEndpoint = "https://rai-library.herokuapp.com";
-let data = [
-  {
-    Id: 0,
-    Author: "scd",
-    Name: "sdef",
-    year:'0'
-  },
-];
-intializeView();
-function intializeView() {
-  const tableContent = document.getElementById("tableContent");
-  const no_data = document.getElementsByClassName("no-data");
-  if (!!tableContent && no_data[0]) {
-    getBooks().then((data) => {
-      rowObject = data;
-      if (!!rowObject && rowObject.length > 0) {
-        document.getElementById("tableContent").style.display = "block";
-        document.getElementsByClassName("no-data")[0].style.display = "none";
-        document.getElementsByClassName("downloadFile")[0].style.display = "inline";
-        renderTable(rowObject);
-      } else {
-        document.getElementsByClassName("downloadFile")[0].style.display = "none";
-        document.getElementById("tableContent").style.display = "none";
-        document.getElementsByClassName("no-data")[0].style.display = "flex";
-      }
-    });
-  }
-}
-function selectFile(event) {
-  selectedFile = event.target.files[0];
-  convert();
-}
-function convert() {
-  XLSX.utils.json_to_sheet(data, "out.xlsx");
-  if (selectedFile) {
-    let fileReader = new FileReader();
-    fileReader.readAsBinaryString(selectedFile);
-    fileReader.onload = (event) => {
-      let data = event.target.result;
-      let workbook = XLSX.read(data, { type: "binary" });
-      workbook.SheetNames.forEach((sheet) => {
-        rowObject = XLSX.utils.sheet_to_row_object_array(
-          workbook.Sheets[sheet]
-        );
-        postBooks(rowObject);
-        !!rowObject
-          ? (document.getElementsByClassName("no-data")[0].style.display =
-              "none")
-          : (document.getElementsByClassName("no-data")[0].style.display =
-              "flex");
-        !!rowObject
-          ? (document.getElementById("tableContent").style.display = "block")
-          : (document.getElementById("tableContent").style.display = "none");
-      });
-    };
-  }
-}
-function postBooks(rowObject) {
-  const bookArray = [];
-  rowObject.forEach((book, index) => {
-    book.Id = index + 1;
-    const bookWithId = {
-      Id: book.Id,
-      Name: book.Name,
-      Author: book.Author,
-      Genre: book.Genre,
-      Publisher:book.Publisher
-    };
-    bookArray.push(bookWithId);
-  });
-  fetch(`${urlEndpoint}/postbookList`, {
-    method: "POST",
-    credentials: "same-origin", // include, *same-origin, omit
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: !!bookArray ? JSON.stringify(bookArray) : [],
-  }).then((res) =>
-    res.json().then((bookList) => {
-      intializeView();
-      renderTable(bookList);
-    })
-  );
-}
-function renderTable(rowObject) {
-  document.getElementById("tableHeadRow").innerHTML = null;
-  document.getElementById("tableBody").innerHTML = null;
-  rowObject.length > 0 && getTableHeader(rowObject);
-  rowObject.forEach((book) => {
-    document.getElementById(
-      "tableBody"
-    ).innerHTML += `<tr><td>${book.Id}</td><td>${book.Name}</td><td>${book.Author}</td><td>${book.Genre}<td><td>${book.Publisher}<td> <i class="bi bi-trash-fill deleteManualRow" onclick="deleteBook(${book.Id})" style="float: left;"></i></td></td>`;
-  });
-}
-function getTableHeader(rowObject) {
-  const objKey = Object.keys(rowObject[0]);
-  for (let key of objKey)
-    document.getElementById(
-      "tableHeadRow"
-    ).innerHTML += `<th scope="col">${key}</th>`;
-  document.getElementById(
-    "tableHeadRow"
-  ).innerHTML += `<th scope="col">Delete</th>`;
-}
-function deleteBook(bookId) {
-  const findIndex = rowObject.findIndex((a) => a.Id === bookId);
-  findIndex !== -1 && rowObject.splice(findIndex, 1) && postBooks(rowObject);
-}
-function search(event) {
-  let bookList = rowObject;
-  bookList = bookList.filter((data) => {
-    return (
-      data.Name.toString().toLowerCase().includes(event.toLowerCase()) ||
-      data.Author.toString().toLowerCase().includes(event.toLowerCase()) || 
-      data.Publisher.toString().toLowerCase().includes(event.toLowerCase())
-    );
-  });
-  bookList.length > 0
-    ? renderTable(bookList)
-    : showMessage({ isError: true, message: "No result found.." });
-}
-function showMessage(result) {
- 
-  if(result.isError){
-    document.getElementById('ërroMsg').innerHTML=result.message;
-    document.getElementsByClassName('alert-danger')[0].style.display='block';
-  }
-}
-function hideMessage(){
-  document.getElementsByClassName('alert-danger')[0].style.display='none';
-}
-function getBooks() {
-  return fetch(`${urlEndpoint}/getbookList`) //api for the get request
-    .then((response) => response.json());
-}
-function addBookMethod() {
-  bookRowId++;
-  addBookField(`bookname${bookRowId}`, "Book Name", true);
-  addBookField(`author${bookRowId}`, "Author", false);
-  addBookField(`genre${bookRowId}`, "Genre", false);
-  addBookField(`publisher${bookRowId}`, "Publisher", false);
-  const modalBody = document.getElementsByClassName("modal-body")[0];
-}
-function addBookField(inputId, placeHolderText, isRowCountAllowed) {
-  const form = document.getElementById("form_div");
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" href="css/book-collection.css" />
+    <script src="js/jQuery.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/xls-to-json.js"></script>
+    <title>Document</title>
+  </head>
+  <body>
+    <header>
+      <div class="header-parent">
+        <img class="m10" src="img/books.png" width="40" height="40" />
+        <span class="title">Library</span>
+        <div class="input-group rounded p10 search">
+          <input
+            type="search"
+            class="form-control rounded"
+            placeholder="Search"
+            aria-label="Search"
+            aria-describedby="search-addon"
+            value=""
+            oninput="search(this.value)"
+          />
+        </div>
+        <i
+          class="bi bi-cloud-download-fill downloadFile"
+          onclick="downloadFile()"
+        ></i>
+      </div>
+    </header>
+    <section>
+      <!-- No-data start -->
+      <div class="no-data">
+        <img src="img/no_data.webp" width="350" height="350" />
+      </div>
+      <!-- No-data end -->
+      <!-- Table start -->
+      <div id="tableContent">
+        <table class="table table-responsive table-bordered table-dark">
+          <thead>
+            <tr id="tableHeadRow"></tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+        <!-- <nav aria-label="Page navigation example">
+          <ul class="pagination justify-content-center">
+            <li class="page-item disabled">
+              <a class="page-link" href="#" tabindex="-1">Previous</a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+              <a class="page-link" href="#">Next</a>
+            </li>
+          </ul>
+        </nav> -->
+      </div>
 
-  const divFormGroup = document.createElement("div");
-  divFormGroup.setAttribute("class", "form-group");
+      <!-- Table end -->
+    </section>
+    <footer>
+      <!-- Upload-icons start -->
+      <div class="card upload">
+        <span class="upload-title p5">Upload with:</span>
+        <div class="p10">
+          <label>
+            <input
+              type="file"
+              id="input"
+              accept=".xls,.xlsx"
+              onchange="selectFile(event)"
+              style="display: none"
+            />
+            <img class="xls-file p5" src="img/xls.png" width="50" height="50" />
+          </label>
 
-  const rowCount = document.createElement("span");
-  rowCount.setAttribute("class", "rowCount mt10");
-  rowCount.setAttribute("name", "manuallyCreated");
-  const text = document.createTextNode(`#${bookRowId + 1}`);
-  rowCount.appendChild(text);
+          <img
+            class="normal-form p5"
+            src="img/new_add.png"
+            width="50"
+            height="50"
+            data-bs-toggle="modal"
+            data-bs-target="#exampleModalLong"
+            onclick="refreshAddBookUi()"
+          />
+        </div>
+      </div>
+      <!-- Upload-icons end -->
 
-  // const deleteRow = document.createElement("i");
-  // deleteRow.setAttribute("class", "bi bi-trash-fill deleteManualRow");
-  // deleteRow.setAttribute("onclick", "deleteManualItem()");
-
-  const label = document.createElement("label");
-  label.setAttribute("for", "exampleInputEmail1");
-  label.setAttribute("class", "mt10");
-  rowCount.setAttribute("name", "manuallyCreated");
-  const node = document.createTextNode(placeHolderText);
-  label.appendChild(node);
-
-  const inputOf = document.createElement("input");
-  inputOf.setAttribute("id", inputId);
-  inputOf.setAttribute("type", "text");
-  inputOf.setAttribute("class", "form-control");
-  inputOf.setAttribute("placeholder", placeHolderText);
-  rowCount.setAttribute("name", "manuallyCreated");
-
-  divFormGroup.appendChild(label);
-  divFormGroup.appendChild(inputOf);
-
-  if (isRowCountAllowed) form.appendChild(rowCount);
-  // if (isRowCountAllowed) form.appendChild(deleteRow);
-  form.appendChild(divFormGroup);
-}
-function addBookManually() {
-  var params = [];
-  let bookObj = { Id: "", Name: "", Author: "", Genre: "",Publisher:"" };
-
-  for (var i = 0; i < document.addBookForm.elements.length; i++) {
-    if(document.addBookForm.elements[i].value===''){
-     showMessage({isError:true,message:'Please fill all the fields!'})
-      return;
-    }
-    const id = parseInt(i) + 1;
-    if (!bookObj.Name) bookObj.Name = document.addBookForm.elements[i].value;
-    else if (!bookObj.Author)
-      bookObj.Author = document.addBookForm.elements[i].value;
-    else if (!bookObj.Genre)
-      bookObj.Genre = document.addBookForm.elements[i].value;
-      else if (!bookObj.Publisher)
-      bookObj.Genre = document.addBookForm.elements[i].value;
-
-    if (id % 4 === 0) {
-      params.push(bookObj);
-      bookObj = { Id: "", Name: "", Author: "", Genre: "",Publisher:"" };
-    }
-  }
-  getBooks().then((data) => {
-    rowObject = data;
-    rowObject = [...rowObject, ...params];
-    postBooks(rowObject);
-  });
-  $('#exampleModalLong').modal('hide')
-}
-function refreshAddBookUi(){
-hideMessage();
-document.getElementById('bookName').value='';
-document.getElementById('author').value='';
-document.getElementById('genre').value='';
-document.getElementById('publisher').value='';
-$("#form_div").empty();
-}
-function deleteManualItem() {
-  const element=document.getElementsByClassName("form-group")[4]; 
-  element.parentNode.removeChild(element);
-  element.parentNode.removeChild(element);
-  element.parentNode.removeChild(element);
-  element.parentNode.removeChild(element);
-}
-function downloadFile() {
-  const headers = {
-    "Content-Type":
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  };
-  fetch(`${urlEndpoint}/download`, { headers: headers }) //api for the get request
-    .then((response) => response.json())
-    .then((data) => console.log(data));
-}
+      <!-- Modal -->
+      <div
+        class="modal fade"
+        id="exampleModalLong"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalLongTitle"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">
+                Modal title
+              </h5>
+              <button
+                type="button"
+                class="close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div
+              id="ërroMsg"
+                class="alert alert-danger"
+                role="alert"
+                style="display: none"
+              >
+                A simple danger alert—check it out!
+              </div>
+              <span id="row1" class="rowCount">#1</span>
+              <!-- <i
+                class="bi bi-trash-fill deleteManualRow"
+                onclick="deleteManualItem()"
+              ></i> -->
+              <form name="addBookForm">
+                <div class="form-group">
+                  <label for="exampleInputEmail1" class="mt10">Book Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="bookName"
+                    aria-describedby="emailHelp"
+                    placeholder="Book Name"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputPassword1" class="mt10">Author</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="author"
+                    placeholder="Author"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputPassword1" class="mt10">Genre</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="genre"
+                    placeholder="Genre"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputPassword1" class="mt10">Genre</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="publisher"
+                    placeholder="Publisher"
+                    required
+                  />
+                </div>
+                <div id="form_div" class="mt10"></div>
+                <i class="bi bi-plus-square-fill" onclick="addBookMethod()"></i>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                onclick="addBookManually()"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- modal close -->
+    </footer>
+  </body>
+  <script src="js/book-collection.js"></script>
+</html>
