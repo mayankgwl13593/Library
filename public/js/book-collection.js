@@ -68,8 +68,7 @@ function postBooks(rowObject) {
       Id: book.Id,
       Name: book.Name,
       Author: book.Author,
-      Genre: book.Genre,
-      Publisher:book.Publisher
+      Genre: book.Genre
     };
     bookArray.push(bookWithId);
   });
@@ -94,7 +93,7 @@ function renderTable(rowObject) {
   rowObject.forEach((book) => {
     document.getElementById(
       "tableBody"
-    ).innerHTML += `<tr><td>${book.Id}</td><td>${book.Name}</td><td>${book.Author}</td><td>${book.Genre}</td><td>${book.Publisher}<td> <i class="bi bi-trash-fill deleteManualRow" onclick="deleteBook(${book.Id})" style="float: left;"></i></td></td>`;
+    ).innerHTML += `<tr><td>${book.Id}</td><td>${book.Name}</td><td>${book.Author}</td><td>${book.Genre}</td> <i class="bi bi-trash-fill deleteManualRow" onclick="deleteBook(${book.Id})" style="float: left;"></i></td></td>`;
   });
 }
 function getTableHeader(rowObject) {
@@ -117,7 +116,7 @@ function search(event) {
     return (
       data.Name.toString().toLowerCase().includes(event.toLowerCase()) ||
       data.Author.toString().toLowerCase().includes(event.toLowerCase()) || 
-      data.Publisher.toString().toLowerCase().includes(event.toLowerCase())
+      data.Genre.toString().toLowerCase().includes(event.toLowerCase())
     );
   });
   bookList.length > 0
@@ -143,7 +142,6 @@ function addBookMethod() {
   addBookField(`bookname${bookRowId}`, "Book Name", true);
   addBookField(`author${bookRowId}`, "Author", false);
   addBookField(`genre${bookRowId}`, "Genre", false);
-  addBookField(`publisher${bookRowId}`, "Publisher", false);
   const modalBody = document.getElementsByClassName("modal-body")[0];
 }
 function addBookField(inputId, placeHolderText, isRowCountAllowed) {
@@ -185,7 +183,7 @@ function addBookField(inputId, placeHolderText, isRowCountAllowed) {
 }
 function addBookManually() {
   var params = [];
-  let bookObj = { Id: "", Name: "", Author: "", Genre: "",Publisher:"" };
+  let bookObj = { Id: "", Name: "", Author: "", Genre: "" };
 
   for (var i = 0; i < document.addBookForm.elements.length; i++) {
     if(document.addBookForm.elements[i].value===''){
@@ -198,12 +196,10 @@ function addBookManually() {
       bookObj.Author = document.addBookForm.elements[i].value;
     else if (!bookObj.Genre)
       bookObj.Genre = document.addBookForm.elements[i].value;
-      else if (!bookObj.Publisher)
-      bookObj.Publisher = document.addBookForm.elements[i].value;
 
-    if (id % 4 === 0) {
+    if (id % 3 === 0) {
       params.push(bookObj);
-      bookObj = { Id: "", Name: "", Author: "", Genre: "",Publisher:"" };
+      bookObj = { Id: "", Name: "", Author: "", Genre: "" };
     }
   }
   getBooks().then((data) => {
@@ -218,12 +214,10 @@ hideMessage();
 document.getElementById('bookName').value='';
 document.getElementById('author').value='';
 document.getElementById('genre').value='';
-document.getElementById('publisher').value='';
 $("#form_div").empty();
 }
 function deleteManualItem() {
-  const element=document.getElementsByClassName("form-group")[4]; 
-  element.parentNode.removeChild(element);
+  const element=document.getElementsByClassName("form-group")[3]; 
   element.parentNode.removeChild(element);
   element.parentNode.removeChild(element);
   element.parentNode.removeChild(element);
