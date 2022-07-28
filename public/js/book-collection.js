@@ -2,7 +2,7 @@ let selectedFile;
 let rowObject = [];
 let bookRowId = 0;
 
-let urlEndpoint = "http://localhost:3000";
+let urlEndpoint = "https://rai-library.herokuapp.com";
 let data = [
   {
     Id: 0,
