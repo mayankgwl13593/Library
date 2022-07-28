@@ -199,7 +199,7 @@ function addBookManually() {
     else if (!bookObj.Genre)
       bookObj.Genre = document.addBookForm.elements[i].value;
       else if (!bookObj.Publisher)
-      bookObj.Genre = document.addBookForm.elements[i].value;
+      bookObj.Publisher = document.addBookForm.elements[i].value;
 
     if (id % 4 === 0) {
       params.push(bookObj);
