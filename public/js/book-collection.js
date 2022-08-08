@@ -149,7 +149,7 @@ function getTableHeader(rowObject) {
     ).innerHTML += `<th scope="col">${key}</th>`;
   document.getElementById(
     "tableHeadRow"
-  ).innerHTML += `<th scope="col">Delete</th>`;
+  ).innerHTML += `<th scope="col">Actions</th>`;
 }
 function deleteBook(bookId) {
   const findIndex = rowObject.findIndex((a) => a.Id === bookId);
