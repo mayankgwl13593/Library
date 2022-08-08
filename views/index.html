@@ -39,7 +39,7 @@
       </div>
     </header>
     <section>
-           <!-- Weather start-->
+      <!-- Weather start-->
       <div id="weatherLayout">
         <span class="hola">Hola, Amigo</span>
         <img id="weather_img" src="" />
@@ -50,33 +50,25 @@
         </div>
       </div>
       <!--  Weather end-->
-      
+
       <!-- No-data start -->
       <div class="no-data">
         <img src="img/no_data.webp" width="350" height="350" />
       </div>
       <!-- No-data end -->
+
       <!-- Table start -->
       <div id="tableContent">
-        <table class="table table-responsive table-bordered table-dark">
+        <table
+          class="table table-responsive table-bordered table-dark"
+          cellspacing="0"
+          width="80%"
+        >
           <thead>
             <tr id="tableHeadRow"></tr>
           </thead>
           <tbody id="tableBody"></tbody>
         </table>
-        <!-- <nav aria-label="Page navigation example">
-          <ul class="pagination justify-content-center">
-            <li class="page-item disabled">
-              <a class="page-link" href="#" tabindex="-1">Previous</a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-              <a class="page-link" href="#">Next</a>
-            </li>
-          </ul>
-        </nav> -->
       </div>
 
       <!-- Table end -->
@@ -84,7 +76,7 @@
     <footer>
       <!-- Upload-icons start -->
       <div class="card upload">
-        <span class="upload-title p5">Upload from:</span>
+        <span class="upload-title p5">Upload with:</span>
         <div class="p10">
           <label>
             <input
@@ -123,7 +115,7 @@
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLongTitle">
-                Modal title
+                Add/Edit Book
               </h5>
               <button
                 type="button"
@@ -136,7 +128,7 @@
             </div>
             <div class="modal-body">
               <div
-              id="ërroMsg"
+                id="ërroMsg"
                 class="alert alert-danger"
                 role="alert"
                 style="display: none"
@@ -193,11 +185,20 @@
                 Close
               </button>
               <button
+                id="addButton"
                 type="button"
                 class="btn btn-primary"
                 onclick="addBookManually()"
               >
                 Add
+              </button>
+              <button
+                id="updateButton"
+                type="button"
+                class="btn btn-primary"
+                onclick="updateBook()"
+              >
+                Update
               </button>
             </div>
           </div>
