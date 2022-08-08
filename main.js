@@ -69,7 +69,7 @@ client.connect((err) => {
       collection
         .insertMany(req.body)
         .then((result) => {
-          return res.send(result);
+          return res.send(req.body);
         })
         .catch((error) => console.error(error));
     }
