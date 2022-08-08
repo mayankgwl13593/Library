@@ -1,14 +1,14 @@
 let selectedFile;
 let rowObject = [];
 let bookRowId = 0;
-
+let updatedBookId = 0;
 let urlEndpoint = "https://rai-library.herokuapp.com";
 let data = [
   {
     Id: 0,
     Author: "scd",
     Name: "sdef",
-    year:'0'
+    year: "0",
   },
 ];
 intializeView();
@@ -22,10 +22,12 @@ function intializeView() {
       if (!!rowObject && rowObject.length > 0) {
         document.getElementById("tableContent").style.display = "block";
         document.getElementsByClassName("no-data")[0].style.display = "none";
-        document.getElementsByClassName("downloadFile")[0].style.display = "inline";
+        document.getElementsByClassName("downloadFile")[0].style.display =
+          "inline";
         renderTable(rowObject);
       } else {
-        document.getElementsByClassName("downloadFile")[0].style.display = "none";
+        document.getElementsByClassName("downloadFile")[0].style.display =
+          "none";
         document.getElementById("tableContent").style.display = "none";
         document.getElementsByClassName("no-data")[0].style.display = "flex";
       }
@@ -69,7 +71,7 @@ function postBooks(rowObject) {
       Id: book.Id,
       Name: book.Name,
       Author: book.Author,
-      Genre: book.Genre
+      Genre: book.Genre,
     };
     bookArray.push(bookWithId);
   });
@@ -83,14 +85,7 @@ function postBooks(rowObject) {
   }).then((res) =>
     res.json().then((bookList) => {
       intializeView();
-      renderTable(bookList.map(res=>{
-        const book = { Id: 0, Name: '', Author: '', Genre: '' }
-        book.Id = res.Id;
-        book.Name = res.Name;
-        book.Author = res.Author;
-        book.Genre = res.Genre;
-        return book;
-      }));
+      renderTable(bookList);
     })
   );
 }
@@ -101,8 +96,50 @@ function renderTable(rowObject) {
   rowObject.forEach((book) => {
     document.getElementById(
       "tableBody"
-    ).innerHTML += `<tr><td>${book.Id}</td><td>${book.Name}</td><td>${book.Author}</td><td>${book.Genre}</td><td> <i class="bi bi-trash-fill deleteManualRow" onclick="deleteBook(${book.Id})" style="float: left;"></i></td></tr>`;
+    ).innerHTML += `<tr><td>${book.Id}</td><td>${book.Name}</td><td>${book.Author}</td><td>${book.Genre}</td><td style="text-align: center;" ><i class="bi bi-pencil-fill deleteManualRow" style="margin-right:5px;" onclick="openUpdateModal(${book.Id})"  data-bs-toggle="modal"
+    data-bs-target="#exampleModalLong"></i> <i class="bi bi-trash-fill deleteManualRow" onclick="deleteBook(${book.Id})"></i></td></tr>`;
   });
+}
+function openUpdateModal(bookId) {
+  updatedBookId = bookId;
+  const book = rowObject.find((res) => res.Id === bookId);
+  document.getElementsByClassName("bi-plus-square-fill")[0].style.display =
+    "none";
+  document.getElementById("addButton").style.display = "none";
+  document.getElementById("updateButton").style.display = "block";
+  document.getElementById("bookName").value = book.Name;
+  document.getElementById("author").value = book.Author;
+  document.getElementById("genre").value = book.Genre;
+  $("#form_div").empty();
+}
+function updateBook() {
+  if (
+    document.getElementById("bookName").value === "" ||
+    document.getElementById("author").value === "" ||
+    document.getElementById("genre").value === ""
+  ) {
+    showMessage({ isError: true, message: "Please fill all the fields!" });
+    return;
+  }
+  const book = {
+    Id: updatedBookId,
+    Name: document.getElementById("bookName").value,
+    Author: document.getElementById("author").value,
+    Genre: document.getElementById("genre").value,
+  };
+  fetch(`${urlEndpoint}/updateBook`, {
+    method: "PATCH",
+    credentials: "same-origin", // include, *same-origin, omit
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(book),
+  }).then((res) =>
+    res.json().then((bookList) => {
+      intializeView();
+      $("#exampleModalLong").modal("hide");
+    })
+  );
 }
 function getTableHeader(rowObject) {
   const objKey = Object.keys(rowObject[0]);
@@ -123,7 +160,7 @@ function search(event) {
   bookList = bookList.filter((data) => {
     return (
       data.Name?.toString().toLowerCase().includes(event.toLowerCase()) ||
-      data.Author?.toString().toLowerCase().includes(event.toLowerCase()) || 
+      data.Author?.toString().toLowerCase().includes(event.toLowerCase()) ||
       data.Genre?.toString().toLowerCase().includes(event.toLowerCase())
     );
   });
@@ -132,14 +169,13 @@ function search(event) {
     : showMessage({ isError: true, message: "No result found.." });
 }
 function showMessage(result) {
- 
-  if(result.isError){
-    document.getElementById('ërroMsg').innerHTML=result.message;
-    document.getElementsByClassName('alert-danger')[0].style.display='block';
+  if (result.isError) {
+    document.getElementById("ërroMsg").innerHTML = result.message;
+    document.getElementsByClassName("alert-danger")[0].style.display = "block";
   }
 }
-function hideMessage(){
-  document.getElementsByClassName('alert-danger')[0].style.display='none';
+function hideMessage() {
+  document.getElementsByClassName("alert-danger")[0].style.display = "none";
 }
 function getBooks() {
   return fetch(`${urlEndpoint}/getbookList`) //api for the get request
@@ -194,8 +230,8 @@ function addBookManually() {
   let bookObj = { Id: "", Name: "", Author: "", Genre: "" };
 
   for (var i = 0; i < document.addBookForm.elements.length; i++) {
-    if(document.addBookForm.elements[i].value===''){
-     showMessage({isError:true,message:'Please fill all the fields!'})
+    if (document.addBookForm.elements[i].value === "") {
+      showMessage({ isError: true, message: "Please fill all the fields!" });
       return;
     }
     const id = parseInt(i) + 1;
@@ -215,17 +251,21 @@ function addBookManually() {
     rowObject = [...rowObject, ...params];
     postBooks(rowObject);
   });
-  $('#exampleModalLong').modal('hide')
+  $("#exampleModalLong").modal("hide");
 }
-function refreshAddBookUi(){
-hideMessage();
-document.getElementById('bookName').value='';
-document.getElementById('author').value='';
-document.getElementById('genre').value='';
-$("#form_div").empty();
+function refreshAddBookUi() {
+  hideMessage();
+  document.getElementsByClassName("bi-plus-square-fill")[0].style.display =
+    "block";
+  document.getElementById("addButton").style.display = "block";
+  document.getElementById("updateButton").style.display = "none";
+  document.getElementById("bookName").value = "";
+  document.getElementById("author").value = "";
+  document.getElementById("genre").value = "";
+  $("#form_div").empty();
 }
 function deleteManualItem() {
-  const element=document.getElementsByClassName("form-group")[3]; 
+  const element = document.getElementsByClassName("form-group")[3];
   element.parentNode.removeChild(element);
   element.parentNode.removeChild(element);
   element.parentNode.removeChild(element);
@@ -239,7 +279,7 @@ function downloadFile() {
     .then((response) => response.json())
     .then((data) => console.log(data));
 }
-function geoLocation(){
+function geoLocation() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(showPosition);
   } else {
@@ -251,15 +291,14 @@ function showPosition(position) {
   fetch(url)
     .then((res) => {
       res.json().then((data) => {
-        console.log(data);
-        getWeather(position.coords.latitude, position.coords.longitude,data);
+        getWeather(position.coords.latitude, position.coords.longitude, data);
       });
     })
     .catch((err) => {
       console.log(err);
     });
 }
-function getWeather(lat, lon,geoData) {
+function getWeather(lat, lon, geoData) {
   const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=8e6917cbec883c6f9722047cdb20bd20&units=metric`;
   fetch(url)
     .then((res) => {
@@ -270,7 +309,7 @@ function getWeather(lat, lon,geoData) {
         document.getElementById(
           "weather_img"
         ).src = `http://openweathermap.org/img/wn/${weatherResult.weather[0].icon}@2x.png`;
-       
+
         var options = {
           weekday: "long",
           year: "numeric",
@@ -278,8 +317,8 @@ function getWeather(lat, lon,geoData) {
           day: "numeric",
         };
         var today = new Date();
-        console.log(today.toLocaleTimeString("en-US", options));
-        document.getElementById("lastUpdate").innerHTML = today.toLocaleTimeString("en-US", options);
+        document.getElementById("lastUpdate").innerHTML =
+          today.toLocaleTimeString("en-US", options);
         //console.log(weatherResult);
       });
     })
