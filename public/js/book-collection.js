@@ -252,21 +252,21 @@ function showPosition(position) {
     .then((res) => {
       res.json().then((data) => {
         console.log(data);
-        getWeather(position.coords.latitude, position.coords.longitude);
+        getWeather(position.coords.latitude, position.coords.longitude,data);
       });
     })
     .catch((err) => {
       console.log(err);
     });
 }
-function getWeather(lat, lon) {
+function getWeather(lat, lon,geoData) {
   const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=8e6917cbec883c6f9722047cdb20bd20&units=metric`;
   fetch(url)
     .then((res) => {
       res.json().then((weatherResult) => {
         document.getElementById(
           "temp"
-        ).innerHTML = `${weatherResult.weather[0].main}, ${weatherResult.main.temp}°C, ${weatherResult.name}`;
+        ).innerHTML = `${weatherResult.weather[0].main}, ${weatherResult.main.temp}°C, ${geoData.address.suburb}, ${geoData.address.city}`;
         document.getElementById(
           "weather_img"
         ).src = `http://openweathermap.org/img/wn/${weatherResult.weather[0].icon}@2x.png`;
