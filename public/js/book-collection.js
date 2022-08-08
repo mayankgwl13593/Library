@@ -82,7 +82,14 @@ function postBooks(rowObject) {
   }).then((res) =>
     res.json().then((bookList) => {
       intializeView();
-      renderTable(bookList);
+      renderTable(bookList.map(res=>{
+        const book = { Id: 0, Name: '', Author: '', Genre: '' }
+        book.Id = res.Id;
+        book.Name = res.Name;
+        book.Author = res.Author;
+        book.Genre = res.Genre;
+        return book;
+      }));
     })
   );
 }
