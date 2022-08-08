@@ -32,53 +32,53 @@ client.connect((err) => {
     res.sendFile(__dirname + "/views/index.html");
   });
   app.get("/getbookList", (req, res) => {
-    collection.find().toArray().then(result=>{
-      res.send(!!result ? result.map(res=>{
-        const book={Id:0,Name:'',Author:'',Genre:''}
-        book.Id=res.Id;
-        book.Name=res.Name;
-        book.Author=res.Author;
-        book.Genre=res.Genre;
+    collection.find().toArray().then(result => {
+      res.send(!!result ? result.map(res => {
+        const book = { Id: 0, Name: '', Author: '', Genre: '' }
+        book.Id = res.Id;
+        book.Name = res.Name;
+        book.Author = res.Author;
+        book.Genre = res.Genre;
         return book;
-      }): []);
+      }) : []);
     })
   });
   app.get("/download", (req, res) => {
-    collection.find().toArray().then(result=>{
+    collection.find().toArray().then(result => {
       var xls = json2xls(result);
-        fs.writeFileSync("data.xlsx", xls, "binary");
-        file = `${__dirname}/data.xlsx`;
-        console.log(file)
-        const url = 'data.xlsx';
-  
-        https.get(url,(res) => {
-            // Image will be stored at this path
-            const filePath = fs.createWriteStream(file);
-            res.pipe(filePath);
-            filePath.on('finish',() => {
-                filePath.close();
-                console.log('Download Completed'); 
-            })
+      fs.writeFileSync("data.xlsx", xls, "binary");
+      file = `${__dirname}/data.xlsx`;
+      console.log(file)
+      const url = 'data.xlsx';
+
+      https.get(url, (res) => {
+        // Image will be stored at this path
+        const filePath = fs.createWriteStream(file);
+        res.pipe(filePath);
+        filePath.on('finish', () => {
+          filePath.close();
+          console.log('Download Completed');
         })
+      })
     })
     res.send({ message: "File downloaded..." });
   });
   app.post("/postbookList", function (req, res) {
     collection.deleteMany({})
-    if(req.body.length>0){
+    if (req.body.length > 0) {
       collection
-      .insertMany(req.body)
-      .then((result) => {
-        return res.send(result);
-      })
-      .catch((error) => console.error(error));
+        .insertMany(req.body)
+        .then((result) => {
+          return res.send(result);
+        })
+        .catch((error) => console.error(error));
     }
-    else{
+    else {
       return res.send([]);
     }
-  
+
   });
-  app.delete("/deletBook", function (req, res) {});
+  app.delete("/deletBook", function (req, res) { });
   //Listen on port 3000
   app.listen(process.env.PORT || port, () => console.log(`Listening on port ${port}`));
   console.log("DB created...");
