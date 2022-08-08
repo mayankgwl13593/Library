@@ -35,6 +35,9 @@ header {
 .mt10{
   margin-top: 10px;;
 }
+.mb0{
+  margin-bottom: 0;
+}
 .p10 {
   padding: 10px;
 }
@@ -66,7 +69,7 @@ header {
   justify-content: center;
   align-items: center;
   text-align: center;
-  min-height: 100vh;
+  min-height: 70vh;
 }
 .search {
   width: 40% !important;
@@ -83,8 +86,16 @@ header {
     float: right;
   }
 }
-#tableContent {
-  margin-top: 70px;
+#weatherLayout {
+  display: flex;
+  margin: 70px 10px 10px 10px;
+  height: 75px;
+  padding: 10px;
+  background-image: url(../img/abstract.svg);
+  background-size: cover;
+  margin-bottom: 10px;
+  border-radius: 20px;
+  align-items: center;
 }
 .title {
   color: white;
@@ -132,4 +143,25 @@ header {
   position: fixed;
   margin-left: 5px;
   color: darkslategrey;
+}
+.hola{
+font-size: 22px;
+color: brown;
+font-weight: 600;
+}
+#temp{
+  font-size: 18px;
+  color: brown;
+  font-weight: 600;
+}
+#lastUpdate{
+  font-size: 14px;
+  color: brown;
+  font-weight: 400;
+}
+.refresh{
+  padding: 5px;
+  color: brown;
+  font-weight: bold;
+  cursor: pointer;
 }
