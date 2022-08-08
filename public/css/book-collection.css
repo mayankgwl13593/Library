@@ -2,24 +2,25 @@
 :root {
   --bs-font-sans-serif: "Karla", sans-serif;
   --bs-body-font-family: var(--bs-font-sans-serif);
-  --bs-modal-border-color:#0ab297;
+  --bs-modal-border-color: #0ab297;
   --bs-btn-color: #fff;
-    --bs-btn-bg: #0ab297;
-    --bs-btn-border-color: #0ab297;
-    --bs-btn-hover-color: #fff;
-    --bs-btn-hover-bg: #0ab297;
-    --bs-btn-hover-border-color: #0ab297;
-    --bs-btn-focus-shadow-rgb: 49, 132, 253;
-    --bs-btn-active-color: #fff;
-    --bs-btn-active-bg: #0ab297;
-    --bs-btn-active-border-color: #0ab297;
-    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-    --bs-btn-disabled-color: #fff;
-    --bs-btn-disabled-bg: #0ab297;
-    --bs-btn-disabled-border-color: #0ab297;
+  --bs-btn-bg: #0ab297;
+  --bs-btn-border-color: #0ab297;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #0ab297;
+  --bs-btn-hover-border-color: #0ab297;
+  --bs-btn-focus-shadow-rgb: 49, 132, 253;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #0ab297;
+  --bs-btn-active-border-color: #0ab297;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: #0ab297;
+  --bs-btn-disabled-border-color: #0ab297;
 }
 body {
   max-height: 100vh;
+  max-width: 100vw;
   font-family: var(--bs-body-font-family);
 }
 header {
@@ -32,10 +33,10 @@ header {
 .m10 {
   margin: 10px;
 }
-.mt10{
-  margin-top: 10px;;
+.mt10 {
+  margin-top: 10px;
 }
-.mb0{
+.mb0 {
   margin-bottom: 0;
 }
 .p10 {
@@ -80,16 +81,31 @@ header {
   width: 65% !important;
   float: right;
 }
-@media only screen and (max-width: 600px) {
+@media (max-width: 600px) {
   .search:focus-within {
     width: 55% !important;
     float: right;
+  }
+  .hola {
+    font-size: 18px;
+    color: brown;
+    font-weight: 600;
+  }
+  #temp {
+    font-size: 14px;
+    color: brown;
+    font-weight: 600;
+  }
+  #lastUpdate {
+    font-size: 12px;
+    color: brown;
+    font-weight: 400;
   }
 }
 #weatherLayout {
   display: flex;
   margin: 70px 10px 10px 10px;
-  height: 75px;
+  height: auto;
   padding: 10px;
   background-image: url(../img/abstract.svg);
   background-size: cover;
@@ -106,7 +122,7 @@ header {
 .header-parent {
   box-shadow: 0px 5px 10px grey;
 }
-.btn{
+.btn {
   border: 1px solid #0ab297;
 }
 .btn-primary {
@@ -124,18 +140,18 @@ header {
   color: #0ab297;
   cursor: pointer;
 }
-.rowCount{
+.rowCount {
   margin-top: 10px;
   margin-bottom: 0;
   font-size: 20px;
   font-weight: bold;
 }
-.deleteManualRow{
-  float: right;
+.deleteManualRow {
+  /* float: right; */
   font-size: 24px;
   cursor: pointer;
 }
-.downloadFile{
+.downloadFile {
   padding: 5px;
   font-size: 30px;
   /* margin-top: 22px !important; */
@@ -144,22 +160,22 @@ header {
   margin-left: 5px;
   color: darkslategrey;
 }
-.hola{
-font-size: 22px;
-color: brown;
-font-weight: 600;
+.hola {
+  font-size: 22px;
+  color: brown;
+  font-weight: 600;
 }
-#temp{
+#temp {
   font-size: 18px;
   color: brown;
   font-weight: 600;
 }
-#lastUpdate{
+#lastUpdate {
   font-size: 14px;
   color: brown;
   font-weight: 400;
 }
-.refresh{
+.refresh {
   padding: 5px;
   color: brown;
   font-weight: bold;
