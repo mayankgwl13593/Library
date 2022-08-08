@@ -13,6 +13,7 @@ let data = [
 ];
 intializeView();
 function intializeView() {
+  geoLocation();
   const tableContent = document.getElementById("tableContent");
   const no_data = document.getElementsByClassName("no-data");
   if (!!tableContent && no_data[0]) {
@@ -237,4 +238,52 @@ function downloadFile() {
   fetch(`${urlEndpoint}/download`, { headers: headers }) //api for the get request
     .then((response) => response.json())
     .then((data) => console.log(data));
+}
+function geoLocation(){
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  } else {
+    console.log("Geolocation is not supported by this browser.");
+  }
+}
+function showPosition(position) {
+  const url = `https://us1.locationiq.com/v1/reverse.php?key=pk.0f8df21e85bd19ddfe839439b167cf76&lat=${position.coords.latitude}&lon=${position.coords.longitude}&format=json`;
+  fetch(url)
+    .then((res) => {
+      res.json().then((data) => {
+        console.log(data);
+        getWeather(position.coords.latitude, position.coords.longitude);
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+function getWeather(lat, lon) {
+  const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=8e6917cbec883c6f9722047cdb20bd20&units=metric`;
+  fetch(url)
+    .then((res) => {
+      res.json().then((weatherResult) => {
+        document.getElementById(
+          "temp"
+        ).innerHTML = `${weatherResult.weather[0].main}, ${weatherResult.main.temp}°C, ${weatherResult.name}`;
+        document.getElementById(
+          "weather_img"
+        ).src = `http://openweathermap.org/img/wn/${weatherResult.weather[0].icon}@2x.png`;
+       
+        var options = {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        };
+        var today = new Date();
+        console.log(today.toLocaleTimeString("en-US", options));
+        document.getElementById("lastUpdate").innerHTML = today.toLocaleTimeString("en-US", options);
+        //console.log(weatherResult);
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 }
