@@ -64,19 +64,9 @@ client.connect((err) => {
         fs.writeFileSync("data.xlsx", xls, "binary");
         file = `${__dirname}/data.xlsx`;
         console.log(file);
-        const url = "data.xlsx";
-
-        https.get(url, (res) => {
-          // Image will be stored at this path
-          const filePath = fs.createWriteStream(file);
-          res.pipe(filePath);
-          filePath.on("finish", () => {
-            filePath.close();
-            console.log("Download Completed");
-          });
-        });
+        res.download(file);
       });
-    res.send({ message: "File downloaded..." });
+    
   });
 
   app.post("/postbookList", function (req, res) {
