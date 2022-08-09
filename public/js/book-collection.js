@@ -271,13 +271,7 @@ function deleteManualItem() {
   element.parentNode.removeChild(element);
 }
 function downloadFile() {
-  const headers = {
-    "Content-Type":
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  };
-  fetch(`${urlEndpoint}/download`, { headers: headers }) //api for the get request
-    .then((response) => response.json())
-    .then((data) => console.log(data));
+    window.open(`${urlEndpoint}/download`)
 }
 function geoLocation() {
   if (navigator.geolocation) {

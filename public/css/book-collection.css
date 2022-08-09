@@ -159,6 +159,7 @@ header {
   position: fixed;
   margin-left: 5px;
   color: darkslategrey;
+  cursor: pointer;
 }
 .hola {
   font-size: 22px;
