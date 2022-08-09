@@ -60,7 +60,11 @@ client.connect((err) => {
       .find()
       .toArray()
       .then((result) => {
-        var xls = json2xls(result);
+        var xls = json2xls(
+          result.map((res) => {
+            return { Name: res.Name, Author: res.Author, Genre: res.Genre };
+          })
+        );
         fs.writeFileSync("data.xlsx", xls, "binary");
         file = `${__dirname}/data.xlsx`;
         console.log(file);
