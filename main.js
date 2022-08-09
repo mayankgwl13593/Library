@@ -64,7 +64,7 @@ client.connect((err) => {
         fs.writeFileSync("data.xlsx", xls, "binary");
         file = `${__dirname}/data.xlsx`;
         console.log(file);
-        res.download(file);
+        res.sendFile(file);
       });
     
   });
