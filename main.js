@@ -59,7 +59,6 @@ client.connect((err) => {
     collection
       .find()
       .toArray()
-      .sort({ Id: 1 })
       .then((result) => {
         var xls = json2xls(result);
         fs.writeFileSync("data.xlsx", xls, "binary");
